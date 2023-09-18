@@ -92,3 +92,63 @@ combined.data.sample <- tm_map(combined.data.sample, stripWhitespace)
 
 ```
 
+## Quiz Week 1
+This section documents the questions and answers to the quiz. It contains six questions.
+
+### Questions 1
+The en_US.blogs.txt file is how many megabytes?
+```{r}
+file.info(file.path(en_dataset, "en_US.blogs.txt"))$size/1024^2
+```
+Answer: It has over 200 megabytes.
+
+### Questions 2
+the en_US.twitter.txt has how many lines of text?
+```{r}
+length(xdata)
+```
+
+### Questions 3
+What is the length of the longest line seen in any of the three en_US data sets?
+```{r}
+require(stringi)
+
+# Max line length in blogs
+max(stri_length(blogdata))
+
+# Max line length in news
+max(stri_length(newsdata))
+
+# Max line length in twitter
+max(stri_length(xdata))
+
+```
+### Questions 4
+In the en_US twitter data set, if you divide the number of lines where the word "love"(all lowercase) occurs by the number of lines the word "hate"(all lowercase) occurs, about what do you get?
+```{r}
+# Get the count of lines with word "love"
+loveinXdata <- length(grep("love", xdata)) 
+
+# Get the count of lines with word "hate"
+hateinXdata <- length(grep("hate", xdata))
+
+loveinXdata / hateinXdata
+```
+
+### Questions 5
+The one tweet in the en_US twitter data set that matches the word “biostats” says what?
+```{r}
+# By problem definition, we know there is exisits only one tween with the word biostats, identify the line number
+biostatsinXdata <- grep("biostats", xdata)
+xdata[biostatsinXdata]
+```
+
+
+### Questions 6
+How many tweets have the exact characters “A computer once beat me at chess, but it was no match for me at kickboxing”. (I.e. the line matches those characters exactly.) 
+```{r}
+# Get the number of lines where the given sentance is present
+sentanceinXdata <- grep("A computer once beat me at chess, but it was no match for me at kickboxing",xdata)
+length(sentanceinXdata)
+```
+
