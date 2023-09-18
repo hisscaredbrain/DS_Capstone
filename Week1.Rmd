@@ -1,0 +1,172 @@
+---
+title: "Week1_Capstone"
+author: "Harsha"
+date: "2023-09-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 1 of Capstone Project
+
+The objective of this capstone project is to bring together the skils learned across the entire 9 segment course. This project is created from ground-up, right from sourccing data, cleaning, formatting and using them to train models and deploy them as a application.
+
+In week 1, there are two tasks - Understanding the problem, getting and cleaning the data.
+
+### Task 0 - Understanding the problem
+The dataset for this project is available at  <https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip>. There is a stipulation that it has to be downloaded from coursera only and not from external sources. 
+
+
+```{r Download data}
+dataset_url <- "https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip"
+proj_path <- "/Users/harsha/Projects/DataScience_Coursera/DS_CapStone/"
+
+# Check if the data folder exists, else create it
+setwd(proj_path)
+if(!file.exists("data")) {
+  dir.create("data")
+}
+
+# Download the data zip file and upzip it into data folder
+if(!file.exists("Coursera-SwiftKey.zip")){
+  download.file(dataset_url, "Coursera-SwiftKey.zip")
+  unzip(zipfile = "./Coursera-SwiftKey.zip", exdir = "./data")
+}
+datapath <- "/Users/harsha/Projects/DataScience_Coursera/DS_CapStone/data/final"
+
+# List the contents of dataset
+list.dirs(datapath)
+
+```
+Understanding of the data is a subjective task. This can be summarized as where do we source the data from, how does it look like and some general information that can gained before embarking on exploration stage.In this task, the source of the data is from coursera which in turn has been provided by the course partner *SwiftKey*. As stated in the course material, this data was collected from publicly available material using a web crawler. Four language sets have been provided - English, German, Finnish and Russian.
+
+### Task 1 - Getting and cleaning the data
+Now that data has been downloaded, lets us load the data into work space.We see that there are four language sets. Now let us load the english language dataset into workspace.
+```{r Load data}
+en_dataset <- file.path(datapath, "en_US")
+# List the files in English dataset
+list.files(en_dataset)
+con = file(file.path(en_dataset, "en_US.blogs.txt"))
+blogdata <- readLines(con, encoding = "UTF-8-MAC", skipNul = TRUE)
+close(con)
+
+con = file(file.path(en_dataset, "en_US.news.txt"))
+newsdata <- readLines(con, encoding = "UTF-8-MAC", skipNul = TRUE)
+close(con)
+
+con = file(file.path(en_dataset, "en_US.twitter.txt"))
+xdata <- readLines(con, encoding = "UTF-8-MAC", skipNul = TRUE)
+close(con)
+```
+
+Task 1 has two parts - cleaning the data and tokenzation.
+
+#### Cleaning the data
+In the course material there is a suggestion that instead of using the entire data, it should be sampled to reduce the size. There is no cleaning happening as of now but only sampling. Let us start with sampling 1% of all the three files and combining it into a single sample set.
+```{r Sampling}
+combined.data.sample <- c(sample(blogdata, length(blogdata)/1000), 
+                          sample(newsdata, length(newsdata)/1000), 
+                          sample(xdata, length(xdata)/1000))
+```
+
+#### Tokenization
+We clean the dataset via tokenization. There is no clear requirement at this stage and let us explore some basic operations such as removing numbers, punctuation and whitespaces. To use the functions from tm, we need a corpus. 
+```{r Toeknization}
+library(tm)
+# Create a corpus from sample dataset
+combined.sample.corpus <- VCorpus(VectorSource(combined.data.sample))
+
+# Covert sample set to lower case
+combined.data.sample <- tm_map(combined.sample.corpus, tolower)
+
+# Remove all numbers from dataset
+combined.data.sample <- tm_map(combined.sample.corpus, removeNumbers)
+
+# Remove all punctuation
+combined.data.sample <- tm_map(combined.sample.corpus, removePunctuation)
+
+# Remove whitespaces
+combined.data.sample <- tm_map(combined.data.sample, stripWhitespace)
+
+```
+
+## Quiz Week 1
+This section documents the questions and answers to the quiz. It contains six questions.
+
+### Questions 1
+The en_US.blogs.txt file is how many megabytes?
+```{r}
+file.info(file.path(en_dataset, "en_US.blogs.txt"))$size/1024^2
+```
+Answer: It has over 200 megabytes.
+
+### Questions 2
+the en_US.twitter.txt has how many lines of text?
+```{r}
+length(xdata)
+```
+
+### Questions 3
+What is the length of the longest line seen in any of the three en_US data sets?
+```{r}
+require(stringi)
+
+# Max line length in blogs
+max(stri_length(blogdata))
+
+# Max line length in news
+max(stri_length(newsdata))
+
+# Max line length in twitter
+max(stri_length(xdata))
+
+```
+### Questions 4
+In the en_US twitter data set, if you divide the number of lines where the word "love"(all lowercase) occurs by the number of lines the word "hate"(all lowercase) occurs, about what do you get?
+```{r}
+# Get the count of lines with word "love"
+loveinXdata <- length(grep("love", xdata)) 
+
+# Get the count of lines with word "hate"
+hateinXdata <- length(grep("hate", xdata))
+
+loveinXdata / hateinXdata
+```
+
+### Questions 5
+The one tweet in the en_US twitter data set that matches the word “biostats” says what?
+```{r}
+# By problem definition, we know there is exisits only one tween with the word biostats, identify the line number
+biostatsinXdata <- grep("biostats", xdata)
+xdata[biostatsinXdata]
+```
+
+
+### Questions 6
+How many tweets have the exact characters “A computer once beat me at chess, but it was no match for me at kickboxing”. (I.e. the line matches those characters exactly.) 
+```{r}
+# Get the number of lines where the given sentance is present
+sentanceinXdata <- grep("A computer once beat me at chess, but it was no match for me at kickboxing",xdata)
+length(sentanceinXdata)
+```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
