@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Week 1 of Capstone Project
 
-The objective of this capstone project is to bring together the skils learned across the entire 9 segment course. This project is created from ground-up, right from sourccing data, cleaning, formatting and using them to train models and deploy them as a application.
+The objective of this capstone project is to bring together the skills learned across the entire 9 segment course. This project is created from ground-up, right from sourcing data, cleaning, formatting and using them to train models and deploy them as a application.
 
 In week 1, there are two tasks - Understanding the problem, getting and cleaning the data.
 
