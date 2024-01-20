@@ -1,0 +1,41 @@
+---
+title: "Predict the next word"
+author: "Harsha"
+date: "2024-01-20"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Objective
+
+This presentation is created as a part of the Capstone project in the [Data Science Course](https://www.coursera.org/learn/data-science-project/) on Coursera by John Hopkins university. The source of the data used in building the model is available in coursera which in turn has been provided by the course partner *SwiftKey*.
+
+The project features an algorithm for predicting next word in a sentence. The outcome of the project is a Shiny App which provides an UI interface to interact with the algorithm.
+
+## Next word predictor
+
+The data source consists of text in English language sourced from blogs, news articles and X (twitter) feeds. The data is organized as sentences in the first phase and then sampled to work with reduced amount of data. For this project 1% and 5% sampling was tested. At the end 1% sampling has been used to ensure that app can be hosted online due to memory constraints.
+
+Some form of cleaning is done on the sampled data to remove, numbers, punctuation marks and special characters. Then a N-Gram analysis using `ngram_asweka` from `ngram` library is applied to generate tokens of words along with frequencies. These are stored in RData files. Based on the words at prompt, a look-up operation is carried out with the saved N-Gram data sets to determine the most likely next word.
+
+
+## Application Details
+
+The source code for the application Next Word Predictor can be found at: https://github.com/hisscaredbrain/NextWordPredictor
+
+The application itself is hosted on the shinyapp.io portal under the link : https://curiousity.shinyapps.io/NextWordPrediction/
+
+Enter the text at the prompt on the left hand panel and hit the button `Submit`. The best three predictions shall be display in the main panel.
+
+The data cleaning is not effective as evidenced with presence of ordinal indicators such as `th`, `st`, or `rd` etc. Due to the low sampling there are instances where second and third predictions are not available when input prompt with 4 or 5 words.
+
+## Summary
+
+This marks the end of my data science learning in Coursera. 
+
+Thank you for reviewing it and helping me learn.
+
+
